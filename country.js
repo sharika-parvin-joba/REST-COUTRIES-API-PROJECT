@@ -1,3 +1,5 @@
+const themeChanger=document.querySelector('.theme-changer')
+
 const countryName=new URLSearchParams(location.search).get('name');
 const flagImage= document.querySelector('.country-details img')
 const countryNameH1= document.querySelector('.country-details h1')
@@ -9,6 +11,7 @@ const capital=document.querySelector('.capital');
 const domain=document.querySelector('.domain');
 const currencies=document.querySelector('.currency');
 const languages=document.querySelector('.language');
+const borderCountries=document.querySelector('.border-countries')
 
 
 fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
@@ -46,4 +49,23 @@ fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
     if(country.languages){
         languages.innerText=Object.values(country.languages).join(", ")
     }
+
+    if(country.borders){
+        country.borders.forEach((border)=>{
+            console.log(border)
+          fetch(`https://restcountries.com/v3.1/alpha/${border}`)
+          .then(res=>res.json())
+          .then(([borderCountry])=>{
+            console.log(borderCountry);
+            const borderCountryTag=document.createElement('a');
+            borderCountryTag.innerText=borderCountry.name.common;
+            borderCountryTag.href=`country.html?name=${borderCountry.name.common}`
+            borderCountries.append(borderCountryTag)
+          })
+        })
+    }
+})
+
+themeChanger.addEventListener('click',()=>{
+    document.body.classList.toggle('dark')
 })
